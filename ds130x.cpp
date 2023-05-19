@@ -38,7 +38,7 @@ uint8_t DS_Read(uint8_t address){
   Wire.write(address);
   Wire.endTransmission();
 
-  Wire.requestFrom(ADDRESS_DS1307, 2);
+  Wire.requestFrom(ADDRESS_DS1307, 1);
   
   value = Wire.read();
 

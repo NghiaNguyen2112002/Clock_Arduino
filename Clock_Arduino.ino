@@ -6,7 +6,7 @@
 
 #define SERIAL_DEBUG_BAUD       9600
 
-#define EXCECUTING_CYCLE        50        //50ms
+#define EXCECUTING_CYCLE        5        //5ms
 
 unsigned long time_cur = 0; 
 uint8_t time_read_ds = 50;              //read ds1307 every 500ms 
@@ -17,6 +17,20 @@ uint8_t index_led = 0;
 
 uint8_t hour, min, second;
 
+void DecodeStr2Time(String str){
+// Format:     "HOUR:MIN"
+//              "13:30"
+  uint8_t index_dot = str.indexOf(':', 0);   //find index of ':'
+  uint8_t hour, min;
+
+  hour = atoi((str.substring(0, index_dot)).c_str());
+  min = atoi((str.substring(index_dot+1, str.length())).c_str());
+
+  DS_Write(ADDRESS_HOUR, hour);
+  DS_Write(ADDRESS_MINUTE, min);
+
+  Serial.print("SET TIME: "); Serial.print(hour); Serial.print(':'); Serial.println(min);
+}
 
 void setup() {
   // put your setup code here, to run once:
@@ -27,7 +41,7 @@ void setup() {
 
   DS_Init();
   LED7_Init();
-  
+ 
 }
 
 void loop() {
@@ -36,8 +50,11 @@ void loop() {
   // program code is executed every 50ms
   if(millis() >= time_cur + EXCECUTING_CYCLE){
     time_cur = millis();
+
+
     counter_time_elapsed = (counter_time_elapsed + 1) % 200;
     if(time_read_ds >= 5) time_read_ds -= 5;
+
 
     if(time_read_ds < 5){
       time_read_ds = 50;
@@ -48,10 +65,14 @@ void loop() {
       Serial.print(hour); Serial.print(':'); Serial.print(min); Serial.print(':'); Serial.println(second);
     }
 
-    if(counter_time_elapsed % 40 < 20){
-      LED7_UpdateDotBuffer(2, 1);
+    if(Serial.available()){
+      DecodeStr2Time(Serial.readString());
     }
-    else LED7_UpdateDotBuffer(2, 0);
+
+    if(counter_time_elapsed % 400 < 200){
+      LED7_UpdateDotBuffer(1, 1);
+    }
+    else LED7_UpdateDotBuffer(1, 0);
 
     LED7_UpdateNumBuffer(hour, min);
 
