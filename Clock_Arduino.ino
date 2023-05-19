@@ -9,7 +9,7 @@
 #define EXCECUTING_CYCLE        5        //5ms
 
 unsigned long time_cur = 0; 
-uint8_t time_read_ds = 50;              //read ds1307 every 500ms 
+uint8_t time_read_ds = 500;              //read ds1307 every 500ms 
 uint8_t counter_time_elapsed = 0;
 
 
@@ -57,7 +57,7 @@ void loop() {
 
 
     if(time_read_ds < 5){
-      time_read_ds = 50;
+      time_read_ds = 500;
       hour = DS_Read(ADDRESS_HOUR);
       min = DS_Read(ADDRESS_MINUTE);
       second = DS_Read(ADDRESS_SECOND);
