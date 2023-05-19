@@ -9,8 +9,8 @@
 #define EXCECUTING_CYCLE        5        //5ms
 
 unsigned long time_cur = 0; 
-uint8_t time_read_ds = 500;              //read ds1307 every 500ms 
-uint8_t counter_time_elapsed = 0;
+uint16_t time_read_ds = 500;              //read ds1307 every 500ms 
+uint16_t counter_time_elapsed = 0;
 
 
 uint8_t index_led = 0;
@@ -52,7 +52,7 @@ void loop() {
     time_cur = millis();
 
 
-    counter_time_elapsed = (counter_time_elapsed + 1) % 200;
+    counter_time_elapsed = (counter_time_elapsed + 1) % 2000;
     if(time_read_ds >= 5) time_read_ds -= 5;
 
 
